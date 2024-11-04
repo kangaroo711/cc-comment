@@ -18,6 +18,7 @@
 ```
 
 小程序调试基础库: 3.3.0
+node版本: ^18.15.0
 
 # 场景
 
@@ -26,10 +27,12 @@
 
 # 附言
 
-主要是插件市场没找到满意的, 诸多用着也不顺, 所以有了cc-comment, 如有Bug请留言或Email, 开源不易且用且珍惜, 感谢使用.
-关于功能样式, 主打一个借鉴如下; 
-参考[*小红书*]App的评论回复功能: 点击评论内容展示回复弹窗, 二级评论默认显示一条, 点击展开查看更多, 无评论收起功能.
-参考[*什么值得买*]App的多层级回复评论title显示效果
+1. 起因是插件市场没找到合适满意的, BUG多功能异常改一出二, 遂只能自己从0开发, 便有了cc-comment
+2. 如有Bug请留言或Email, 开源不易且用且珍惜, 感谢使用.
+3. 关于功能样式, 主打一个借鉴如下: 
+ - 参考[*小红书*]App的评论回复功能: 点击评论内容展示回复弹窗, 二级评论默认显示一 条, 点击展开查看更多.
+ - 参考[*什么值得买*]App的多层级回复评论title显示效果
+ - 参考uni插件市场[*dr3am*]作者的优秀代码逻辑思路, [*kitrig*]作者的优秀markdown
 
 # 功能
 
@@ -42,7 +45,9 @@
 * 回复一级评论 √
 * 回复二级评论 √
 * 折叠过多的二级评论 √
+* 收起展开的二级评论 √
 * 展开超长评论内容 √
+* 收起超长评论内容 √
 * 不能回复自身评论 √
 * 删除 √
 * 仅可删除自身评论 √
@@ -50,13 +55,9 @@
 * 点赞 √
 * 点赞大于100显示99+ √
 
-#### 待实现
-
-* 图片上传 ×
-
 有其他需求的评论区留言
 
-# :props 属性
+# props 属性
 
 | 属性名 | 说明  | 类型  |  默认值  |  必填  | 说明  |
 | -------- | -------- | -------- |-------- |-------- |-------- |
@@ -65,7 +66,7 @@
 | tableTotal     | 评论总数     | Number     | 0     | true     | |
 | deleteMode     | 评论删除模式     | String     | all     | false     |  bind-当被删除的一级评论存在回复评论, 那么该评论内容变更显示为[当前评论内容已被移除] only-仅删除当前评论(后端删除相关联的回复评论, 否则总数显示不对) all-删除所有评论包括回复评论 |
 
-# @event 事件
+# event 事件
 
 | 属性名 | 说明  | 参数  |  说明  |
 | -------- | -------- | -------- |-------- |
@@ -73,7 +74,7 @@
 | replyClick | 回复事件 | {{params}, callback} | { params: 评论参数 }, callback回调函数, 请求后端接口后调用, 执行后续逻辑     |
 | deleteClick | 删除事件 | {{params, mode}, callback} | { params: 评论数组id, mode: 删除模式[all, bind, only] }, callback回调函数, 请求后端接口后调用, 执行后续逻辑   |
 
-# $ref 实例可调用属性&事件
+# ref 实例可调用属性&事件
 
 | 属性名 | 说明  | 回调参数  |  说明  |  平台差异说明  |
 | -------- | -------- | -------- |-------- |-------- |
@@ -84,15 +85,12 @@
 ```javascript=
 // 用户信息
 type userInfoKeys = {
-
       id: number // 用户id
       user_name: string // 用户名
       user_avatar: string // 用户头像地址
-
 }
 // 评论表
 type tableDataKeys = {
-
       id: number // 评论id
       parent_id: number // 父级评论id
       reply_id: number // 被回复人评论id
@@ -103,7 +101,6 @@ type tableDataKeys = {
       is_like: boolean // 是否点赞
       like_count: number // 点赞数统计
       create_time: string // 创建时间
-
 }
 
 ```
@@ -114,6 +111,7 @@ type tableDataKeys = {
 <template>
   <CComment
     ref="ccRef"
+    v-model:myInfo="myInfo"
     v-model:userInfo="userInfo"
     v-model:tableData="tableData"
     v-model:tableTotal="tableTotal"
@@ -122,11 +120,11 @@ type tableDataKeys = {
     @deleteFun="deleteFun"
     :deleteMode="deleteMode"
   ></CComment>
-  <view class="btn" @tap="openComment">发一条新评论</view>
+  <view class="btn" @tap="openComment">发表新评论</view>
 </template>
 
 <script setup>
-import CComment from "@/components/bb-comment/index";
+import CComment from "@/components/cc-comment/index";
 import { ref } from "vue";
 
 // 唤起新评论弹框
@@ -195,12 +193,17 @@ function deleteFun({ params, mode }, callback) {
 }
 
 // ----模拟数据------模拟数据------模拟数据----
-// 作者信息(提示: 一般来自localstorage, 如果是实时获取的话, 那么获取到数据后再v-if显示评论组件)
+// 当前登录用户信息(提示: 一般来自localstorage, 如果是实时获取的话, 那么获取到数据后再v-if显示评论组件)
+let myInfo = ref({
+  id: 110, // 评论id
+  user_name: "cc", // 用户名
+  user_avatar: "https://img0.baidu.com/it/u=2836960144,3650263035&fm=253&fmt=auto&app=138&f=JPEG?w=474&h=474", // 用户头像
+});
+// 文章作者信息(提示: 一般来自localstorage, 如果是实时获取的话, 那么获取到数据后再v-if显示评论组件)
 let userInfo = ref({
   id: 120, // 评论id
   user_name: "ikun", // 用户名
-  user_avatar:
-    "https://pic1.zhimg.com/80/v2-a79071a705f55c5d88f6c74e6111fe84_720w.webp", // 用户头像
+  user_avatar: "https://pic1.zhimg.com/80/v2-a79071a705f55c5d88f6c74e6111fe84_720w.webp", // 用户头像
 });
 let tableTotal = ref(4); // 评论总数
 let tableData = ref([
@@ -210,12 +213,11 @@ let tableData = ref([
     reply_id: null, // 被回复人评论id
     reply_name: null, // 被回复人名称
     user_name: "ikun", // 用户名
-    user_avatar:
-      "https://pic1.zhimg.com/80/v2-a79071a705f55c5d88f6c74e6111fe84_720w.webp", // 评论者头像地址
+    user_avatar: "https://pic1.zhimg.com/80/v2-a79071a705f55c5d88f6c74e6111fe84_720w.webp", // 评论者头像地址
     user_content: "唱,跳,rap,篮球", // 评论内容
     is_like: false, // 是否点赞
     like_count: 120, // 点赞数统计
-    create_time: "2024-01-01 09:16", // 创建时间
+    create_time: "2025-02-19 09:16", // 创建时间
   },
   {
     id: 130,
@@ -223,12 +225,11 @@ let tableData = ref([
     reply_id: 120, // 被回复评论id
     reply_name: "ikun", // 被回复人名称
     user_name: "小黑子", // 用户名
-    user_avatar:
-      "https://pic2.zhimg.com/80/v2-06eade66ec837713d765b1557bf20b25_720w.webp", // 评论者头像地址
-    user_content: "姬霓太美", // 评论内容
+    user_avatar: "https://pic2.zhimg.com/80/v2-06eade66ec837713d765b1557bf20b25_720w.webp", // 评论者头像地址
+    user_content: "姬霓太美~祝自己生日快乐~~", // 评论内容
     is_like: false, // 是否点赞
     like_count: 67, // 点赞数统计
-    create_time: "2024-01-01 17:06", // 创建时间
+    create_time: "2025-03-07 00:06", // 创建时间
   },
   {
     id: 140,
@@ -236,12 +237,11 @@ let tableData = ref([
     reply_id: 130, // 被回复评论id
     reply_name: "小黑子", // 被回复人名称
     user_name: "守护宗主维护宗门", // 用户名
-    user_avatar:
-      "https://pic3.zhimg.com/80/v2-244696a62fa750b8570cf56bfaa5b26a_720w.webp", // 评论者头像地址
+    user_avatar: "https://pic3.zhimg.com/80/v2-244696a62fa750b8570cf56bfaa5b26a_720w.webp", // 评论者头像地址
     user_content: "你露出鸡脚了", // 评论内容
     is_like: false, // 是否点赞
     like_count: 16, // 点赞数统计
-    create_time: "2024-01-02 23:08", // 创建时间
+    create_time: "2025-05-10 17:08", // 创建时间
   },
   {
     id: 150,
@@ -249,13 +249,12 @@ let tableData = ref([
     reply_id: null, // 被回复评论id
     reply_name: null, // 被回复人名称
     user_name: "音乐制作人", // 用户名
-    user_avatar:
-      "https://pic2.zhimg.com/80/v2-88ec6f8c6d3305122664dd18a28730e5_720w.webp", // 评论者头像地址
+    user_avatar: "https://pic2.zhimg.com/80/v2-88ec6f8c6d3305122664dd18a28730e5_720w.webp", // 评论者头像地址
     user_content:
       "只因你太美baby 只因你太美baby 只因你实在是太美baby 只因你太美baby 迎面走来的你让我如此蠢蠢欲动 这种感觉我从未有 Cause I got a crush on you who you 你是我的 我是你的 谁 再多一眼看一眼就会爆炸 再近一点靠近点快被融化", // 评论内容
     is_like: true, // 是否点赞
     like_count: 8, // 点赞数统计
-    create_time: "2024-01-08 00:45", // 创建时间
+    create_time: "2025-12-21 00:45", // 创建时间
   },
 ]); // 评论表
 </script>
@@ -265,7 +264,7 @@ let tableData = ref([
   text-align: center;
   color: #fff;
   padding: 20rpx;
-  margin: 20rpx;
+  margin: 50rpx;
   border-radius: 20rpx;
   background-color: #2979ff;
 }

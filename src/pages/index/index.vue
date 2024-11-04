@@ -84,13 +84,13 @@ function deleteFun({ params, mode }, callback) {
 }
 
 // ----模拟数据------模拟数据------模拟数据----
-// 当前登录人的信息(提示: 一般来自localstorage, 如果是实时获取的话, 那么获取到数据后再v-if显示评论组件)
+// 当前登录用户信息(提示: 一般来自localstorage, 如果是实时获取的话, 那么获取到数据后再v-if显示评论组件)
 let myInfo = ref({
   id: 110, // 评论id
   user_name: "cc", // 用户名
   user_avatar: "https://img0.baidu.com/it/u=2836960144,3650263035&fm=253&fmt=auto&app=138&f=JPEG?w=474&h=474", // 用户头像
 });
-// 作者信息(提示: 一般来自localstorage, 如果是实时获取的话, 那么获取到数据后再v-if显示评论组件)
+// 文章作者信息(提示: 一般来自localstorage, 如果是实时获取的话, 那么获取到数据后再v-if显示评论组件)
 let userInfo = ref({
   id: 120, // 评论id
   user_name: "ikun", // 用户名
@@ -108,7 +108,7 @@ let tableData = ref([
     user_content: "唱,跳,rap,篮球", // 评论内容
     is_like: false, // 是否点赞
     like_count: 120, // 点赞数统计
-    create_time: "2024-01-01 09:16", // 创建时间
+    create_time: "2025-02-19 09:16", // 创建时间
   },
   {
     id: 130,
@@ -117,10 +117,10 @@ let tableData = ref([
     reply_name: "ikun", // 被回复人名称
     user_name: "小黑子", // 用户名
     user_avatar: "https://pic2.zhimg.com/80/v2-06eade66ec837713d765b1557bf20b25_720w.webp", // 评论者头像地址
-    user_content: "姬霓太美", // 评论内容
+    user_content: "姬霓太美~祝自己生日快乐~~", // 评论内容
     is_like: false, // 是否点赞
     like_count: 67, // 点赞数统计
-    create_time: "2024-01-01 17:06", // 创建时间
+    create_time: "2025-03-07 00:06", // 创建时间
   },
   {
     id: 140,
@@ -132,7 +132,7 @@ let tableData = ref([
     user_content: "你露出鸡脚了", // 评论内容
     is_like: false, // 是否点赞
     like_count: 16, // 点赞数统计
-    create_time: "2024-01-02 23:08", // 创建时间
+    create_time: "2025-05-10 17:08", // 创建时间
   },
   {
     id: 150,
@@ -145,7 +145,7 @@ let tableData = ref([
       "只因你太美baby 只因你太美baby 只因你实在是太美baby 只因你太美baby 迎面走来的你让我如此蠢蠢欲动 这种感觉我从未有 Cause I got a crush on you who you 你是我的 我是你的 谁 再多一眼看一眼就会爆炸 再近一点靠近点快被融化", // 评论内容
     is_like: true, // 是否点赞
     like_count: 8, // 点赞数统计
-    create_time: "2024-01-08 00:45", // 创建时间
+    create_time: "2025-12-21 00:45", // 创建时间
   },
 ]); // 评论表
 </script>
