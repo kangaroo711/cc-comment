@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import CComment from "@/components/cc-comment/index";
+import CComment from "@/components/cc-comment/cc-comment.vue";
 import { ref } from "vue";
 
 // 唤起新评论弹框
