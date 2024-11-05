@@ -1,5 +1,8 @@
-# 下载地址 
-[cc-comment评论组件-uniapp插件市场传送门](https://ext.dcloud.net.cn/plugin?id=16266)
+# 介绍
+感谢大家的支持, 有使用问题请留言, 第一时间修复.
+> 如果有vue2的需求, 可以点击下方传送门下载组件
+[cc-comment 评论列表，回复，点赞，删除组件 vue2+uni-ui 传送门](https://ext.dcloud.net.cn/plugin?id=20901)
+
 # 环境
 基于vue3.2和uni-ui开发; 
 依赖版本参考如下:
