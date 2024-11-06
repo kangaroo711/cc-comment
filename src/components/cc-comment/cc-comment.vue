@@ -169,8 +169,8 @@ function treeTransForm(data) {
   let result = [];
   let map = {};
   newData.forEach((item, i) => {
-    item.owner = item.id === props.myInfo.id; // 是否为当前登陆用户 可以对自己的评论进行删除 不能回复
-    item.author = item.id === props.userInfo.id; // 是否为作者 显示标记
+    item.owner = item.user_id === props.myInfo.user_id; // 是否为当前登陆用户 可以对自己的评论进行删除 不能回复
+    item.author = item.user_id === props.userInfo.user_id; // 是否为作者 显示标记
     map[item.id] = item;
   });
   newData.forEach((item) => {
@@ -254,9 +254,10 @@ function sendClick({ item1, index1, item2, index2 } = replyTemp) {
   }
   params = {
     ...params,
-    user_name: props.myInfo.user_name, // 当前登陆账号用户名
-    user_avatar: props.myInfo.user_avatar, //  当前登陆账号用户头像地址
-    user_content: commentValue.value, //  用户评论内容
+    user_id: props.myInfo.user_id, // 用户id
+    user_name: props.myInfo.user_name, // 用户名
+    user_avatar: props.myInfo.user_avatar, //  用户头像地址
+    user_content: commentValue.value, // 用户评论内容
     is_like: false, // 是否点赞
     like_count: 0, // 点赞数统计
     create_time: "刚刚", // 创建时间
@@ -309,7 +310,7 @@ function delConfirmFun({ item1, index1, item2, index2 } = delTemp) {
   });
   // 删除二级评论
   if (index2 >= 0) {
-    emit("deleteFun", { params: [c_data.children[index2].id] }, (res) => {
+    emit("deleteFun", { params: [c_data.children[index2].id], mode: props.deleteMode }, (res) => {
       uni.hideLoading();
       emit("update:tableTotal", props.tableTotal - 1);
       c_data.children.splice(index2, 1);
@@ -322,15 +323,25 @@ function delConfirmFun({ item1, index1, item2, index2 } = delTemp) {
       switch (props.deleteMode) {
         case "bind":
           // 一级评论内容展示修改为: 当前评论内容已被移除
-          c_data.user_content = "当前评论内容已被移除";
+          emit(
+            "deleteFun",
+            {
+              params: [c_data.id],
+              mode: props.deleteMode,
+            },
+            (res) => {
+              uni.hideLoading();
+              c_data.user_content = "当前评论内容已被移除";
+            }
+          );
           break;
         case "only":
           // 后端自行根据删除的一级评论id, 查找关联的子评论进行删除
           emit(
             "deleteFun",
             {
-              mode: props.deleteMode,
               params: [c_data.id],
+              mode: props.deleteMode,
             },
             (res) => {
               uni.hideLoading();
@@ -355,7 +366,7 @@ function delConfirmFun({ item1, index1, item2, index2 } = delTemp) {
       }
     } else {
       // 一级评论无回复, 直接删除
-      emit("deleteFun", { params: [c_data.id] }, (res) => {
+      emit("deleteFun", { params: [c_data.id], mode: props.deleteMode }, (res) => {
         uni.hideLoading();
         emit("update:tableTotal", props.tableTotal - 1);
         dataList.value.splice(index1, 1);

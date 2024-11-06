@@ -3,10 +3,9 @@
 > 如果有vue2的需求, 可以点击下方传送门下载组件
 [cc-comment 评论列表，回复，点赞，删除组件 vue2+uni-ui 传送门](https://ext.dcloud.net.cn/plugin?id=20901)
 
-# 环境
+# 依赖&环境
 基于vue3.2和uni-ui开发; 
 依赖版本参考如下:
-
 ```
 {
     "dependencies": {
@@ -20,9 +19,11 @@
   }
 }
 ```
-
+环境版本参考如下:
+```
 - 小程序调试基础库: 3.3.0
 - node版本: ^18.15.0
+```
 
 # 场景
 
@@ -73,9 +74,9 @@
 
 | 属性名 | 说明  | 参数  |  说明  |
 | -------- | -------- | -------- |-------- |
-| likeClick | 点赞事件 | {{params}, callback} | { params: 评论id }, callback回调函数, 请求后端接口后调用, 执行后续逻辑     |
-| replyClick | 回复事件 | {{params}, callback} | { params: 评论参数 }, callback回调函数, 请求后端接口后调用, 执行后续逻辑     |
-| deleteClick | 删除事件 | {{params, mode}, callback} | { params: 评论数组id, mode: 删除模式[all, bind, only] }, callback回调函数, 请求后端接口后调用, 执行后续逻辑   |
+| likeClick | 点赞事件 | { {params}, callback} | { params: 评论id }, callback回调函数, 请求后端接口后调用, 执行后续逻辑     |
+| replyClick | 回复事件 | { {params}, callback} | { params: 评论参数 }, callback回调函数, 请求后端接口后调用, 执行后续逻辑     |
+| deleteClick | 删除事件 | { {params, mode}, callback} | { params: 评论数组id, mode: 删除模式[all, bind, only] }, callback回调函数, 请求后端接口后调用, 执行后续逻辑   |
 
 # ref 实例可调用属性&事件
 
@@ -88,20 +89,21 @@
 ```javascript=
 // 用户信息
 type userInfoKeys = {
-      id: number // 用户id
+      user_id: number // 用户id
       user_name: string // 用户名
       user_avatar: string // 用户头像地址
 }
 // 评论表
 type tableDataKeys = {
       id: number // 评论id
-      parent_id: number // 父级评论id
-      reply_id: number // 被回复人评论id
-      reply_name: string // 被回复人名称
+      parent_id: number // 评论父级的id
+      reply_id: number // 被回复评论的id
+      reply_name: string // 被回复人的名称
+      user_id: number, // 用户id
       user_name: string // 用户名
-      user_avatar: string // 评论者头像地址
-      user_content: string // 评论内容
-      is_like: boolean // 是否点赞
+      user_avatar: string // 用户头像地址
+      user_content: string // 用户评论内容
+      is_like: boolean // 用户是否点赞
       like_count: number // 点赞数统计
       create_time: string // 创建时间
 }
